@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'screens/start_screen.dart';
 import 'screens/product_screen.dart';
 import 'screens/detail_screen.dart';
 import 'screens/checkout_screen.dart';
@@ -13,7 +13,7 @@ void main() {
     ),
     initialRoute: '/',
     routes: {
-      '/': (context) => HomeScreen(),
+      '/': (context) => StartScreen(),
       '/product': (context) => ProductScreen(),
 
 
