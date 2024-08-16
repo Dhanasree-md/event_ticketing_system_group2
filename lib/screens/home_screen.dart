@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Events")),
+      appBar: AppBar(title: Text("Events"), backgroundColor: Colors.green,),
       body: ListView.builder(
         itemCount: events.length,
         itemBuilder: (context, index) {

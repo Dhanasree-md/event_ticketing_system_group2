@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class ThankYouScreen extends StatelessWidget { // Corrected class name
+class ThankYouScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Thank You"),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: Column(
@@ -21,10 +21,10 @@ class ThankYouScreen extends StatelessWidget { // Corrected class name
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/')); // Redirects back to home
+                Navigator.popUntil(context, ModalRoute.withName('/product')); // Redirects back to home
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
+                backgroundColor: Colors.green,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),

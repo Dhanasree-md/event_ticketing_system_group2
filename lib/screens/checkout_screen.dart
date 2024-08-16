@@ -21,15 +21,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _cvvController = TextEditingController();
   bool _isProcessing = false;
 
-  void _processOrder() {
+  void _processOrder() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isProcessing = true;
         widget.event.ticketsAvailable -= widget.quantity;
       });
 
-      // Immediately navigate to the Thank You screen
-      Navigator.pushReplacementNamed(context, '/thankyou');
+      // Show the SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order successful')),
+      );
+
+      // Wait for the SnackBar to complete and then navigate to the home screen
+      await Future.delayed(Duration(seconds: 2));
+
+      Navigator.pushReplacementNamed(context, '/');
     }
   }
 
@@ -38,7 +45,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Checkout"),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -143,7 +150,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     : ElevatedButton(
                   onPressed: _processOrder,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: Colors.green,
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),

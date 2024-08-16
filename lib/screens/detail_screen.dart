@@ -32,7 +32,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.event.eventName)),
+      appBar: AppBar(title: Text(widget.event.eventName), backgroundColor: Colors.green,),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
