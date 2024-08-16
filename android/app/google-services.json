@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "721641334318",
+    "project_id": "event-management-flutter",
+    "storage_bucket": "event-management-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721641334318:android:414d79e86de0b6920fa1bf",
+        "android_client_info": {
+          "package_name": "com.example.event_ticketing_system_group2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg1VN-qdhyhY_SOa65t4arxHOmYF9WtXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
