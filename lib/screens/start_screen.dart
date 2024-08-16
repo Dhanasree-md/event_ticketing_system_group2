@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import 'registration_screen.dart';
 
 class StartScreen extends StatelessWidget {
   @override
@@ -11,7 +11,7 @@ class StartScreen extends StatelessWidget {
             // Replace the current screen (StartScreen) with HomeScreen
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
+              MaterialPageRoute(builder: (context) => RegistrationScreen()),
             );
           },
           child: Image.asset('assets/images/logo.png'),
