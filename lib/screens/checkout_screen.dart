@@ -226,13 +226,24 @@ class _CardExpiryInputFormatter extends TextInputFormatter {
       TextEditingValue oldValue,
       TextEditingValue newValue,
       ) {
+    // Get the new text value
     var newText = newValue.text;
-    if (newText.length == 2 && !newText.contains('/')) {
-      newText = newText + '/';
+
+    newText = newText.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (newText.length > 2) {
+      newText = '${newText.substring(0, 2)}/${newText.substring(2)}';
     }
+
+    if (newText.length > 5) {
+      newText = newText.substring(0, 5);
+    }
+
+    // Return the formatted value
     return TextEditingValue(
       text: newText,
       selection: TextSelection.collapsed(offset: newText.length),
     );
   }
 }
+
