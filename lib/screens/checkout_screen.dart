@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../models/event.dart';
 
 class CheckoutScreen extends StatefulWidget {
+  final Event event;
+  final int quantity;
+
+  CheckoutScreen({required this.event, required this.quantity});
+
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
 }
@@ -10,32 +17,49 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _cardController = TextEditingController();
+  final _expiryDateController = TextEditingController();
+  final _cvvController = TextEditingController();
+  bool _isProcessing = false;
+
+  void _processOrder() {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isProcessing = true;
+        widget.event.ticketsAvailable -= widget.quantity;
+      });
+
+      // Immediately navigate to the Thank You screen
+      Navigator.pushReplacementNamed(context, '/thankyou');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Checkout"),
+        backgroundColor: Colors.purple,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // Order Summary (Optional)
               Text(
                 "Order Summary",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              Divider(),
+              Text("Event: ${widget.event.eventName}", style: TextStyle(fontSize: 16)),
+              Text("Quantity: ${widget.quantity}", style: TextStyle(fontSize: 16)),
+              Text("Total: \$${widget.event.price * widget.quantity}", style: TextStyle(fontSize: 16)),
+              Divider(thickness: 1.5, color: Colors.grey[300]),
               SizedBox(height: 20),
-              // Name Field
-              TextFormField(
+              _buildTextField(
+                label: "Name",
                 controller: _nameController,
-                decoration: InputDecoration(labelText: "Name"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your name';
@@ -43,11 +67,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
-              // Address Field
-              TextFormField(
+              SizedBox(height: 20),
+              _buildTextField(
+                label: "Address",
                 controller: _addressController,
-                decoration: InputDecoration(labelText: "Address"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your address';
@@ -55,32 +78,78 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
-              // Card Number Field
-              TextFormField(
+              SizedBox(height: 20),
+              _buildTextField(
+                label: "Credit Card Number",
                 controller: _cardController,
-                decoration: InputDecoration(labelText: "Credit Card Number"),
                 keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(19),
+                  _CardNumberInputFormatter(),
+                ],
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your card number';
+                  if (value == null || value.replaceAll(' ', '').length != 16) {
+                    return 'Card number must be 16 digits';
                   }
                   return null;
                 },
               ),
               SizedBox(height: 20),
-              // Submit Button
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildTextField(
+                      label: "Expiry Date (MM/YY)",
+                      controller: _expiryDateController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(5),
+                        _CardExpiryInputFormatter(),
+                      ],
+                      validator: (value) {
+                        if (value == null || !RegExp(r'(0[1-9]|1[0-2])\/?([0-9]{2})').hasMatch(value)) {
+                          return 'Enter valid expiry date';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: _buildTextField(
+                      label: "CVV",
+                      controller: _cvvController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(3),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.length != 3) {
+                          return 'CVV must be 3 digits';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
               Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Process the payment here
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Processing Payment')),
-                      );
-                    }
-                  },
-                  child: Text("Submit Order"),
+                child: _isProcessing
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                  onPressed: _processOrder,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple,
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text("Submit Order", style: TextStyle(fontSize: 18)),
                 ),
               ),
             ],
@@ -95,6 +164,68 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _nameController.dispose();
     _addressController.dispose();
     _cardController.dispose();
+    _expiryDateController.dispose();
+    _cvvController.dispose();
     super.dispose();
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(),
+      ),
+      validator: validator,
+    );
+  }
+}
+
+class _CardNumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    final text = newValue.text.replaceAll(' ', '');
+    final buffer = StringBuffer();
+
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      if ((i + 1) % 4 == 0 && i + 1 != text.length) {
+        buffer.write(' ');
+      }
+    }
+
+    final newText = buffer.toString();
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
+  }
+}
+
+class _CardExpiryInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    var newText = newValue.text;
+    if (newText.length == 2 && !newText.contains('/')) {
+      newText = newText + '/';
+    }
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
   }
 }
