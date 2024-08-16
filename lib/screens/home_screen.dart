@@ -106,7 +106,7 @@ class HomeScreen extends StatelessWidget {
               child: ListTile(
                 leading: Image.asset(events[index].image),
                 title: Text(events[index].eventName),
-                subtitle: Text("\$${events[index].price} - Tickets left: ${events[index].ticketsAvailable}"),
+                subtitle: Text("\$${events[index].price} - Date: ${events[index].date}"),
               ),
             ),
           );

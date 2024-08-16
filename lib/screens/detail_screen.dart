@@ -88,6 +88,11 @@ class _DetailScreenState extends State<DetailScreen> {
                     "Price: \$${widget.event.price}",
                     style: TextStyle(fontSize: 18, color: Colors.grey[700]),
                   ),
+                  SizedBox(height: 8),
+                  Text(
+                    "TicketsAvailable: \$${widget.event.ticketsAvailable}",
+                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                  ),
                   SizedBox(height: 16),
                   Text(
                     widget.event.description,
