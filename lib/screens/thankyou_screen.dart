@@ -21,7 +21,8 @@ class ThankYouScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/product')); // Redirects back to home
+                // Use pushReplacementNamed to go back to the ProductScreen or HomeScreen
+                Navigator.pushReplacementNamed(context, '/product');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,

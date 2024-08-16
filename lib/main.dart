@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => StartScreen(),
         '/product': (context) => ProductScreen(),
-        '/thankyou': (context) => ThankYouScreen(), // Correct route name here
+        '/thankyou': (context) => ThankYouScreen(),
       },
     );
   }

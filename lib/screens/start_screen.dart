@@ -1,4 +1,3 @@
-import 'package:event_ticketing_system_group2/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
@@ -9,12 +8,13 @@ class StartScreen extends StatelessWidget {
       body: Center(
         child: GestureDetector(
           onTap: () {
-            Navigator.push(
+            // Replace the current screen (StartScreen) with HomeScreen
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           },
-          child: Image.asset('assets/images/logo.png'), // Replace with your logo asset
+          child: Image.asset('assets/images/logo.png'),
         ),
       ),
     );
